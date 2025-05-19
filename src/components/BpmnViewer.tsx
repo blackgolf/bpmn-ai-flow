@@ -1,7 +1,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
-import { ZoomIn, ZoomOut, Maximize2, Save, FilePdf, Image, FileText } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize2, Save, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { saveAs } from 'file-saver';
@@ -174,7 +174,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ bpmnXml }) => {
       const { svg } = await viewer.saveSVG();
       
       // Criamos um elemento de imagem temporário
-      const image = new Image();
+      const image = document.createElement('img');
       const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(svgBlob);
       
@@ -242,11 +242,11 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ bpmnXml }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={exportSvg}>
-              <Image className="h-4 w-4 mr-2" />
+              <FileText className="h-4 w-4 mr-2" />
               Exportar como SVG
             </DropdownMenuItem>
             <DropdownMenuItem onClick={exportPdf}>
-              <FilePdf className="h-4 w-4 mr-2" />
+              <FileText className="h-4 w-4 mr-2" />
               Exportar como PDF
             </DropdownMenuItem>
             <DropdownMenuItem onClick={exportBpmn}>
