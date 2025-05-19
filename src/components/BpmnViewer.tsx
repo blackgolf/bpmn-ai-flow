@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 import { ZoomIn, ZoomOut, Maximize2, Save, FileText } from 'lucide-react';
@@ -151,7 +150,7 @@ const BpmnViewer: React.FC<BpmnViewerProps> = ({ bpmnXml }) => {
     canvas.zoom('fit-viewport');
   };
 
-  // Novas funções de exportação
+  // Export functions
   const exportSvg = async () => {
     if (!viewer) return;
     
