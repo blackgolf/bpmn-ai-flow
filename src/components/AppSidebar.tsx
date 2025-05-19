@@ -1,37 +1,13 @@
-
 import React from 'react';
-import { 
-  Play, 
-  PauseCircle, 
-  Download, 
-  Upload, 
-  Save, 
-  Folder, 
-  ZoomIn, 
-  ZoomOut, 
-  MousePointer, 
-  Plus 
-} from 'lucide-react';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarTrigger
-} from "@/components/ui/sidebar";
+import { Play, PauseCircle, Download, Upload, Save, Folder, ZoomIn, ZoomOut, MousePointer, Plus } from 'lucide-react';
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-
 const AppSidebar = () => {
-  return (
-    <Sidebar>
+  return <Sidebar>
       <SidebarHeader className="p-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold">BPMN Designer</h1>
+        <h1 className="text-xl font-bold">BPMN Designer
+por JonMartins</h1>
         <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
@@ -181,8 +157,6 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-    </Sidebar>
-  );
+    </Sidebar>;
 };
-
 export default AppSidebar;
