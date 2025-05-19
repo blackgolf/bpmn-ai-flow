@@ -81,24 +81,26 @@ export const applyCustomColors = (viewer: any) => {
   
   // Apply custom colors to all elements based on their type
   elementRegistry.forEach((element: any) => {
-    if (element.type === 'bpmn:StartEvent') {
-      element.businessObject.di.set('fill', '#B7F774');
-      element.businessObject.di.set('stroke', '#2ECC40');
+    // Verificar se o element possui a propriedade businessObject.di antes de acessá-la
+    if (element.type === 'bpmn:StartEvent' && element.businessObject && element.di) {
+      element.di.set('fill', '#B7F774');
+      element.di.set('stroke', '#2ECC40');
       graphicsFactory.update('shape', element, element.gfx);
     } 
-    else if (element.type === 'bpmn:EndEvent') {
-      element.businessObject.di.set('fill', '#FFB3B3');
-      element.businessObject.di.set('stroke', '#FF0000');
+    else if (element.type === 'bpmn:EndEvent' && element.businessObject && element.di) {
+      element.di.set('fill', '#FFB3B3');
+      element.di.set('stroke', '#FF0000');
       graphicsFactory.update('shape', element, element.gfx);
     }
-    else if (element.type === 'bpmn:Task' || element.type === 'bpmn:UserTask' || element.type === 'bpmn:ServiceTask') {
-      element.businessObject.di.set('fill', '#FFFFFF');
-      element.businessObject.di.set('stroke', '#000000');
+    else if ((element.type === 'bpmn:Task' || element.type === 'bpmn:UserTask' || 
+              element.type === 'bpmn:ServiceTask') && element.businessObject && element.di) {
+      element.di.set('fill', '#FFFFFF');
+      element.di.set('stroke', '#000000');
       graphicsFactory.update('shape', element, element.gfx);
     }
-    else if (element.type.includes('Gateway')) {
-      element.businessObject.di.set('fill', '#FFFFFF');
-      element.businessObject.di.set('stroke', '#000000');
+    else if (element.type.includes('Gateway') && element.businessObject && element.di) {
+      element.di.set('fill', '#FFFFFF');
+      element.di.set('stroke', '#000000');
       graphicsFactory.update('shape', element, element.gfx);
     }
   });
@@ -119,13 +121,13 @@ export const applyColorsOnImport = (viewer: any) => {
   eventBus.on('shape.added', (event: any) => {
     const element = event.element;
     
-    if (element.type === 'bpmn:StartEvent') {
-      element.businessObject.di.set('fill', '#B7F774');
-      element.businessObject.di.set('stroke', '#2ECC40');
+    if (element.type === 'bpmn:StartEvent' && element.di) {
+      element.di.set('fill', '#B7F774');
+      element.di.set('stroke', '#2ECC40');
     } 
-    else if (element.type === 'bpmn:EndEvent') {
-      element.businessObject.di.set('fill', '#FFB3B3');
-      element.businessObject.di.set('stroke', '#FF0000');
+    else if (element.type === 'bpmn:EndEvent' && element.di) {
+      element.di.set('fill', '#FFB3B3');
+      element.di.set('stroke', '#FF0000');
     }
   });
   

@@ -74,8 +74,20 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
           console.warn('BPMN import warnings:', result.warnings);
         }
         
-        // Apply custom colors to all elements
-        applyCustomColors(viewer);
+        // Use direct styling for elements instead of businessObject.di
+        const elementRegistry = viewer.get('elementRegistry');
+        const canvas = viewer.get('canvas');
+        
+        elementRegistry.forEach((element: any) => {
+          if (element.type === 'bpmn:StartEvent' && element.di) {
+            element.di.set('fill', '#B7F774');
+            element.di.set('stroke', '#2ECC40');
+          } 
+          else if (element.type === 'bpmn:EndEvent' && element.di) {
+            element.di.set('fill', '#FFB3B3');
+            element.di.set('stroke', '#FF0000');
+          }
+        });
         
         // Adjust viewport
         viewer.get('canvas').zoom('fit-viewport');
