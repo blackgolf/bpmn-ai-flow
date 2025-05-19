@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 import { toast } from 'sonner';
-import { bpmnStyles } from './BpmnStyles';
+import { bpmnStyles, applyCustomColors, applyColorsOnImport } from './BpmnStyles';
 
 interface BpmnViewerCoreProps {
   bpmnXml: string | null;
@@ -30,6 +30,11 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
     });
     
     viewerRef.current = bpmnViewer;
+    
+    // Initialize event listeners for applying colors
+    applyColorsOnImport(bpmnViewer);
+    
+    // Pass the viewer instance to the parent component
     onViewerInit(bpmnViewer);
     
     return () => {
@@ -69,6 +74,10 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
           console.warn('BPMN import warnings:', result.warnings);
         }
         
+        // Apply custom colors to all elements
+        applyCustomColors(viewer);
+        
+        // Adjust viewport
         viewer.get('canvas').zoom('fit-viewport');
         
         toast.success('Diagrama BPMN carregado com sucesso');

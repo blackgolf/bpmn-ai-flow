@@ -3,6 +3,7 @@
  * Styles for the BPMN diagram elements
  */
 export const bpmnStyles = `
+  /* Base styles for common event types */
   .djs-container .bpmn-icon-start-event-none circle {
     fill: #B7F774 !important;
     stroke: #2ECC40 !important;
@@ -24,14 +25,16 @@ export const bpmnStyles = `
     stroke: #000000 !important;
   }
   
-  /* Cores para elementos específicos */
+  /* More specific selectors for elements by their type or ID pattern */
   .djs-container .djs-visual[data-element-id*="StartEvent"] circle {
     fill: #B7F774 !important;
     stroke: #2ECC40 !important;
+    stroke-width: 2px !important;
   }
   .djs-container .djs-visual[data-element-id*="EndEvent"] circle {
     fill: #FFB3B3 !important;
     stroke: #FF0000 !important;
+    stroke-width: 2px !important;
   }
   .djs-container .djs-visual[data-element-id*="Task"] rect {
     fill: #FFFFFF !important;
@@ -41,6 +44,32 @@ export const bpmnStyles = `
     fill: #FFFFFF !important;
     stroke: #000000 !important;
   }
+  
+  /* Additional selectors targeting element types directly */
+  .djs-container [data-element-type="bpmn:StartEvent"] circle {
+    fill: #B7F774 !important;
+    stroke: #2ECC40 !important;
+    stroke-width: 2px !important;
+  }
+  .djs-container [data-element-type="bpmn:EndEvent"] circle {
+    fill: #FFB3B3 !important;
+    stroke: #FF0000 !important;
+    stroke-width: 2px !important;
+  }
+  
+  /* Target all SVG circles inside start events */
+  .djs-container .djs-element.djs-shape[data-shape-type="bpmn:StartEvent"] .djs-visual circle {
+    fill: #B7F774 !important;
+    stroke: #2ECC40 !important;
+    stroke-width: 2px !important;
+  }
+  
+  /* Target all SVG circles inside end events */
+  .djs-container .djs-element.djs-shape[data-shape-type="bpmn:EndEvent"] .djs-visual circle {
+    fill: #FFB3B3 !important;
+    stroke: #FF0000 !important;
+    stroke-width: 2px !important;
+  }
 `;
 
 export const applyCustomColors = (viewer: any) => {
@@ -48,7 +77,9 @@ export const applyCustomColors = (viewer: any) => {
   
   const elementRegistry = viewer.get('elementRegistry');
   const graphicsFactory = viewer.get('graphicsFactory');
+  const canvas = viewer.get('canvas');
   
+  // Apply custom colors to all elements based on their type
   elementRegistry.forEach((element: any) => {
     if (element.type === 'bpmn:StartEvent') {
       element.businessObject.di.set('fill', '#B7F774');
@@ -69,6 +100,53 @@ export const applyCustomColors = (viewer: any) => {
       element.businessObject.di.set('fill', '#FFFFFF');
       element.businessObject.di.set('stroke', '#000000');
       graphicsFactory.update('shape', element, element.gfx);
+    }
+  });
+  
+  // Force redraw to apply the styles
+  canvas.zoom('fit-viewport');
+};
+
+/**
+ * Apply colors when diagram is imported
+ */
+export const applyColorsOnImport = (viewer: any) => {
+  if (!viewer) return;
+  
+  // Apply colors when diagram elements are added
+  const eventBus = viewer.get('eventBus');
+  
+  eventBus.on('shape.added', (event: any) => {
+    const element = event.element;
+    
+    if (element.type === 'bpmn:StartEvent') {
+      element.businessObject.di.set('fill', '#B7F774');
+      element.businessObject.di.set('stroke', '#2ECC40');
+    } 
+    else if (element.type === 'bpmn:EndEvent') {
+      element.businessObject.di.set('fill', '#FFB3B3');
+      element.businessObject.di.set('stroke', '#FF0000');
+    }
+  });
+  
+  // Also apply colors when elements are rendered
+  eventBus.on('render.shape', (event: any) => {
+    const element = event.element;
+    const gfx = event.gfx;
+    
+    if (element.type === 'bpmn:StartEvent') {
+      const circle = gfx.querySelector('circle');
+      if (circle) {
+        circle.style.fill = '#B7F774';
+        circle.style.stroke = '#2ECC40';
+      }
+    } 
+    else if (element.type === 'bpmn:EndEvent') {
+      const circle = gfx.querySelector('circle');
+      if (circle) {
+        circle.style.fill = '#FFB3B3';
+        circle.style.stroke = '#FF0000';
+      }
     }
   });
 };
