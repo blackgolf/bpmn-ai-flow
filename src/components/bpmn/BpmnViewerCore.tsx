@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 import { toast } from 'sonner';
-import { bpmnStyles, applyCustomColors } from './BpmnStyles';
+import { bpmnStyles } from './BpmnStyles';
 
 interface BpmnViewerCoreProps {
   bpmnXml: string | null;
@@ -18,7 +18,7 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Adiciona o estilo CSS personalizado ao documento
+    // Add custom CSS style to the document
     const newStyleElement = document.createElement('style');
     newStyleElement.textContent = bpmnStyles;
     document.head.appendChild(newStyleElement);
@@ -30,11 +30,10 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
     
     viewerRef.current = bpmnViewer;
     onViewerInit(bpmnViewer);
-    (window as any).__bpmnJSInstance = bpmnViewer;
-
+    
     return () => {
       bpmnViewer.destroy();
-      // Remove o estilo CSS personalizado quando o componente é desmontado
+      // Remove the custom CSS style when component is unmounted
       if (newStyleElement && document.head.contains(newStyleElement)) {
         document.head.removeChild(newStyleElement);
       }
@@ -49,10 +48,13 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
       const viewer = viewerRef.current;
       
       try {
+        // Clear previous diagram first
+        viewer.clear();
+        
+        // Import the new XML
         await viewer.importXML(bpmnXml);
         viewer.get('canvas').zoom('fit-viewport');
         
-        applyCustomColors(viewer);
         toast.success('Diagrama BPMN carregado com sucesso');
       } catch (err) {
         console.error('Erro ao importar diagrama BPMN:', err);

@@ -28,10 +28,14 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
       // In production, this would call your secure backend
       
       setTimeout(() => {
+        // Generate a slightly different diagram each time by adding a timestamp
+        // This ensures React detects it as a new XML string
+        const timestamp = Date.now();
+        
         const sampleBpmnXml = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_${timestamp}" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:collaboration id="Collaboration_0n8rfe2">
-    <bpmn:participant id="Participant_1" name="Processo de Aprovação de Solicitação" processRef="Process_1" />
+    <bpmn:participant id="Participant_1" name="${processDescription.substring(0, 50) || 'Processo de Aprovação de Solicitação'}" processRef="Process_1" />
   </bpmn:collaboration>
   <bpmn:process id="Process_1" isExecutable="false">
     <bpmn:laneSet id="LaneSet_1">
