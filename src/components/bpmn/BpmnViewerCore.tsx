@@ -13,6 +13,7 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<any>(null);
   const [styleElement, setStyleElement] = useState<HTMLStyleElement | null>(null);
+  const [currentXml, setCurrentXml] = useState<string | null>(null);
 
   // Initialize the viewer only once
   useEffect(() => {
@@ -32,7 +33,14 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
     onViewerInit(bpmnViewer);
     
     return () => {
-      bpmnViewer.destroy();
+      if (bpmnViewer) {
+        try {
+          bpmnViewer.destroy();
+        } catch (err) {
+          console.error('Error destroying BPMN viewer:', err);
+        }
+      }
+      
       // Remove the custom CSS style when component is unmounted
       if (newStyleElement && document.head.contains(newStyleElement)) {
         document.head.removeChild(newStyleElement);
@@ -42,17 +50,25 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
 
   // Handle XML changes in a separate effect
   useEffect(() => {
-    if (!bpmnXml || !viewerRef.current) return;
-
+    // Check if XML has changed to avoid unnecessary reloads
+    if (!bpmnXml || bpmnXml === currentXml || !viewerRef.current) return;
+    
+    setCurrentXml(bpmnXml);
+    
     const loadBpmnDiagram = async () => {
       const viewer = viewerRef.current;
       
       try {
         // Clear previous diagram first
-        viewer.clear();
+        await viewer.clear();
         
         // Import the new XML
-        await viewer.importXML(bpmnXml);
+        const result = await viewer.importXML(bpmnXml);
+        
+        if (result.warnings && result.warnings.length > 0) {
+          console.warn('BPMN import warnings:', result.warnings);
+        }
+        
         viewer.get('canvas').zoom('fit-viewport');
         
         toast.success('Diagrama BPMN carregado com sucesso');
