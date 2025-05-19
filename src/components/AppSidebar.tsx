@@ -1,6 +1,17 @@
 
 import React from 'react';
-import { MousePointer, ZoomIn, ZoomOut } from 'lucide-react';
+import { 
+  Play, 
+  PauseCircle, 
+  Download, 
+  Upload, 
+  Save, 
+  Folder, 
+  ZoomIn, 
+  ZoomOut, 
+  MousePointer, 
+  Plus 
+} from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -24,6 +35,95 @@ const AppSidebar = () => {
         <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Arquivo</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <TooltipProvider>
+                <SidebarMenuItem>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton asChild>
+                        <Button variant="ghost" size="icon" className="w-full justify-start">
+                          <Plus className="h-4 w-4 mr-2" />
+                          <span>Novo</span>
+                        </Button>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Criar um novo diagrama</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </SidebarMenuItem>
+                
+                <SidebarMenuItem>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton asChild>
+                        <Button variant="ghost" size="icon" className="w-full justify-start">
+                          <Folder className="h-4 w-4 mr-2" />
+                          <span>Abrir</span>
+                        </Button>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Abrir um diagrama existente</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </SidebarMenuItem>
+                
+                <SidebarMenuItem>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton asChild>
+                        <Button variant="ghost" size="icon" className="w-full justify-start">
+                          <Save className="h-4 w-4 mr-2" />
+                          <span>Salvar</span>
+                        </Button>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Salvar diagrama atual</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </SidebarMenuItem>
+                
+                <SidebarMenuItem>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton asChild>
+                        <Button variant="ghost" size="icon" className="w-full justify-start">
+                          <Upload className="h-4 w-4 mr-2" />
+                          <span>Importar</span>
+                        </Button>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Importar arquivo BPMN</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </SidebarMenuItem>
+                
+                <SidebarMenuItem>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton asChild>
+                        <Button variant="ghost" size="icon" className="w-full justify-start">
+                          <Download className="h-4 w-4 mr-2" />
+                          <span>Exportar</span>
+                        </Button>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Exportar diagrama</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </SidebarMenuItem>
+              </TooltipProvider>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
         <SidebarGroup>
           <SidebarGroupLabel>Ferramentas</SidebarGroupLabel>
           <SidebarGroupContent>
