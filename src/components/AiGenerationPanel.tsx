@@ -27,11 +27,25 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
       // Simulate an API call for now
       // In production, this would call your secure backend
       
-      // For demo purposes, we'll just return a simple BPMN XML
       setTimeout(() => {
         const sampleBpmnXml = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="Collaboration_0n8rfe2">
+    <bpmn:participant id="Participant_1" name="Processo de Aprovação de Solicitação" processRef="Process_1" />
+  </bpmn:collaboration>
   <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_1" name="Setor de Análise">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_2" name="Setor de Execução">
+        <bpmn:flowNodeRef>Task_2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_1</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1" name="Início">
       <bpmn:outgoing>SequenceFlow_1</bpmn:outgoing>
     </bpmn:startEvent>
@@ -64,68 +78,85 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
     <bpmn:sequenceFlow id="SequenceFlow_6" sourceRef="Task_3" targetRef="EndEvent_1" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0n8rfe2">
+      <bpmndi:BPMNShape id="Participant_1_di" bpmnElement="Participant_1" isHorizontal="true">
+        <dc:Bounds x="129" y="52" width="721" height="378" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1_di" bpmnElement="Lane_1" isHorizontal="true">
+        <dc:Bounds x="159" y="52" width="691" height="180" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_2_di" bpmnElement="Lane_2" isHorizontal="true">
+        <dc:Bounds x="159" y="232" width="691" height="198" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
-        <dc:Bounds x="152" y="102" width="36" height="36" />
+        <dc:Bounds x="212" y="122" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="155" y="145" width="31" height="14" />
+          <dc:Bounds x="218" y="165" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_1_di" bpmnElement="Task_1">
-        <dc:Bounds x="240" y="80" width="100" height="80" />
+        <dc:Bounds x="300" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1_di" bpmnElement="Gateway_1" isMarkerVisible="true">
+        <dc:Bounds x="455" y="115" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="454" y="85" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_2_di" bpmnElement="Task_2">
+        <dc:Bounds x="560" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_3_di" bpmnElement="Task_3">
+        <dc:Bounds x="350" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="732" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="722" y="345" width="56" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1_di" bpmnElement="SequenceFlow_1">
-        <di:waypoint x="188" y="120" />
-        <di:waypoint x="240" y="120" />
+        <di:waypoint x="248" y="140" />
+        <di:waypoint x="300" y="140" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Gateway_1_di" bpmnElement="Gateway_1" isMarkerVisible="true">
-        <dc:Bounds x="395" y="95" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="392" y="65" width="55" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_2_di" bpmnElement="SequenceFlow_2">
-        <di:waypoint x="340" y="120" />
-        <di:waypoint x="395" y="120" />
+        <di:waypoint x="400" y="140" />
+        <di:waypoint x="455" y="140" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_2_di" bpmnElement="Task_2">
-        <dc:Bounds x="500" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_3_di" bpmnElement="SequenceFlow_3">
-        <di:waypoint x="445" y="120" />
-        <di:waypoint x="500" y="120" />
+        <di:waypoint x="480" y="165" />
+        <di:waypoint x="480" y="320" />
+        <di:waypoint x="560" y="320" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="463" y="102" width="19" height="14" />
+          <dc:Bounds x="486" y="240" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_3_di" bpmnElement="Task_3">
-        <dc:Bounds x="500" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_4_di" bpmnElement="SequenceFlow_4">
-        <di:waypoint x="420" y="145" />
-        <di:waypoint x="420" y="230" />
-        <di:waypoint x="500" y="230" />
+        <di:waypoint x="455" y="140" />
+        <di:waypoint x="400" y="140" />
+        <di:waypoint x="400" y="280" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="426" y="184" width="19" height="14" />
+          <dc:Bounds x="419" y="122" width="20" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
-        <dc:Bounds x="662" y="142" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="652" y="185" width="56" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_5_di" bpmnElement="SequenceFlow_5">
-        <di:waypoint x="600" y="120" />
-        <di:waypoint x="631" y="120" />
-        <di:waypoint x="631" y="160" />
-        <di:waypoint x="662" y="160" />
+        <di:waypoint x="660" y="320" />
+        <di:waypoint x="732" y="320" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_6_di" bpmnElement="SequenceFlow_6">
-        <di:waypoint x="600" y="230" />
-        <di:waypoint x="631" y="230" />
-        <di:waypoint x="631" y="160" />
-        <di:waypoint x="662" y="160" />
+        <di:waypoint x="450" y="320" />
+        <di:waypoint x="480" y="320" />
+        <di:waypoint x="480" y="280" />
+        <di:waypoint x="650" y="280" />
+        <di:waypoint x="650" y="250" />
+        <di:waypoint x="750" y="250" />
+        <di:waypoint x="750" y="302" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
@@ -170,6 +201,16 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
           'Gerar BPMN'
         )}
       </Button>
+      
+      <div className="mt-4 text-xs text-muted-foreground">
+        <p className="font-medium mb-1">Padrão de Cores BPMN:</p>
+        <ul className="list-disc list-inside space-y-1">
+          <li>Eventos de Início: <span className="inline-block w-3 h-3 bg-bpmn-start-event-bg border border-bpmn-start-event-border rounded-full mr-1"></span> Verde</li>
+          <li>Eventos de Fim: <span className="inline-block w-3 h-3 bg-bpmn-end-event-bg border border-bpmn-end-event-border rounded-full mr-1"></span> Vermelho</li>
+          <li>Atividades: <span className="inline-block w-3 h-3 bg-bpmn-activity-bg border border-bpmn-activity-border mr-1"></span> Branco</li>
+          <li>Gateways: <span className="inline-block w-3 h-3 bg-bpmn-gateway-bg border border-bpmn-gateway-border transform rotate-45 mr-1"></span> Branco</li>
+        </ul>
+      </div>
     </div>
   );
 };
