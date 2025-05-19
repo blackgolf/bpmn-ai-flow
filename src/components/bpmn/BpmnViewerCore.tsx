@@ -11,8 +11,10 @@ interface BpmnViewerCoreProps {
 
 const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const viewerRef = useRef<any>(null);
   const [styleElement, setStyleElement] = useState<HTMLStyleElement | null>(null);
 
+  // Initialize the viewer only once
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -25,8 +27,10 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
     const bpmnViewer = new BpmnJS({
       container: containerRef.current
     });
-
+    
+    viewerRef.current = bpmnViewer;
     onViewerInit(bpmnViewer);
+    (window as any).__bpmnJSInstance = bpmnViewer;
 
     return () => {
       bpmnViewer.destroy();
@@ -35,18 +39,15 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
         document.head.removeChild(newStyleElement);
       }
     };
-  }, [onViewerInit]);
+  }, []); // Only run once on mount
 
+  // Handle XML changes in a separate effect
   useEffect(() => {
-    if (!bpmnXml) return;
+    if (!bpmnXml || !viewerRef.current) return;
 
     const loadBpmnDiagram = async () => {
-      const viewer = await import('bpmn-js').then(() => 
-        (window as any).__bpmnJSInstance
-      );
+      const viewer = viewerRef.current;
       
-      if (!viewer) return;
-
       try {
         await viewer.importXML(bpmnXml);
         viewer.get('canvas').zoom('fit-viewport');
@@ -63,7 +64,7 @@ const BpmnViewerCore: React.FC<BpmnViewerCoreProps> = ({ bpmnXml, onViewerInit }
       console.error('Erro ao processar diagrama BPMN:', error);
       toast.error('Erro ao processar o diagrama BPMN');
     });
-  }, [bpmnXml]);
+  }, [bpmnXml]); // Only run when bpmnXml changes
 
   return <div ref={containerRef} className="w-full flex-grow" />;
 };
