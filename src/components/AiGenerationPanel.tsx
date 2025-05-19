@@ -6,67 +6,6 @@ import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AiGenerationPanelProps {
-  onBpmnXmlGenerated: (xml: string) => void; // Callback para passar o XML para o viewer
-}
-
-const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onBpmnXmlGenerated }) => {
-  const [description, setDescription] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleGenerateDiagram = async () => {
-    if (!description.trim()) {
-      setError('Por favor, insira uma descrição para o diagrama.');
-      return;
-    }
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('/api/generate-bpmn', { // Chama seu endpoint de backend
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ description }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Erro HTTP: ${response.status}`);
-      }
-
-      const data = await response.json();
-      onBpmnXmlGenerated(data.bpmnXml); // Passa o XML para o componente pai/viewer
-    } catch (err: any) {
-      console.error('Erro ao gerar diagrama:', err);
-      setError(err.message || 'Ocorreu um erro ao gerar o diagrama.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div>
-      <h3>Gerar Diagrama BPMN com IA</h3>
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Descreva o processo que você quer modelar..."
-        rows={5}
-        style={{ width: '100%', marginBottom: '10px' }}
-        disabled={isLoading}
-      />
-      <button onClick={handleGenerateDiagram} disabled={isLoading}>
-        {isLoading ? 'Gerando...' : 'Gerar Diagrama'}
-      </button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
-  );
-};
-
-export default AiGenerationPanel;
-
-interface AiGenerationPanelProps {
   onGenerateBpmn: (xml: string) => void;
 }
 
