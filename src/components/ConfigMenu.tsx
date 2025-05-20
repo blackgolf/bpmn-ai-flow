@@ -53,6 +53,11 @@ const ConfigMenu: React.FC = () => {
   const saveApiKey = () => {
     localStorage.setItem('openai-api-key', apiKey);
     verifyApiKey(apiKey);
+    
+    // Dispara um evento customizado para notificar outros componentes
+    // que a chave API foi atualizada
+    const event = new Event('api-key-updated');
+    window.dispatchEvent(event);
   };
   
   return (

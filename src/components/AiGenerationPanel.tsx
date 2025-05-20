@@ -14,10 +14,30 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
   const [isGenerating, setIsGenerating] = useState(false);
   const [apiConnected, setApiConnected] = useState(false);
   
-  // Verifica se a API está conectada ao carregar o componente
+  // Verifica se a API está conectada ao carregar o componente e quando o localStorage muda
   useEffect(() => {
-    const apiKey = localStorage.getItem('openai-api-key');
-    setApiConnected(!!apiKey);
+    const checkApiConnection = () => {
+      const apiKey = localStorage.getItem('openai-api-key');
+      setApiConnected(!!apiKey);
+    };
+    
+    // Verifica ao montar o componente
+    checkApiConnection();
+    
+    // Cria um evento para detectar mudanças no localStorage
+    const handleStorageChange = () => {
+      checkApiConnection();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Também podemos criar um evento customizado para quando a chave API for atualizada
+    window.addEventListener('api-key-updated', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('api-key-updated', handleStorageChange);
+    };
   }, []);
   
   // Este prompt será enviado para a API do OpenAI
