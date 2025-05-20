@@ -40,23 +40,37 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
     };
   }, []);
   
-  // Este prompt será enviado para a API do OpenAI
+  // Este prompt será enviado para a API do OpenAI, incluindo as instruções especiais de BPMN
   const buildBpmnPrompt = (description: string): string => {
-    return `Contexto: Você é um especialista em modelagem de processos usando BPMN 2.0. 
-    Gere um XML de diagrama BPMN 2.0 completo para o seguinte processo:
-    
-    ${description}
-    
-    Regras:
-    - Use a notação BPMN 2.0 correta
-    - Inclua no mínimo os eventos de início e fim
-    - Use swimlanes (pools/lanes) para representar diferentes participantes
-    - Inclua atividades, gateways conforme necessário
-    - Garanta que o XML gerado seja válido e possa ser aberto em ferramentas de modelagem BPMN
-    - Adicione os elementos de diagrama (BPMNDiagram) com as posições dos elementos para visualização
-    - NÃO inclua explicações, apenas o XML.
-    
-    Formato esperado: XML BPMN 2.0 válido e completo, começando com <?xml version="1.0" encoding="UTF-8"?>`;
+    return `Você é um especialista em modelagem de processos utilizando a notação BPMN 2.0. Com base na descrição abaixo, gere um diagrama BPMN que respeite os seguintes critérios funcionais e visuais:
+
+📌 FUNCIONAIS:
+- Utilize os elementos básicos de BPMN: 
+  - Eventos (Início, Intermediário e Término),
+  - Atividades (com verbo no infinitivo),
+  - Gateways (Exclusivo e Paralelo),
+  - Pools e Lanes (representando os papéis/setores envolvidos no processo).
+- Mantenha a lógica do processo clara e compreensível, evitando gateways em sequência sem atividades entre eles.
+- Sempre que abrir um gateway, lembre-se de fechá-lo corretamente com o fluxo de retorno.
+- Se houver troca de mensagens entre participantes, utilize eventos de envio e recebimento de forma lógica (não iniciar com recebimento sem envio).
+- As atividades devem ser claras e específicas, preferencialmente com marcadores que indiquem o tipo de tarefa: Manual, Usuário, Serviço, etc.
+- O processo deve deixar evidente: ponto de partida, entradas, sequência das atividades, quem executa (raias), recursos, saídas e término.
+
+🎨 VISUAIS (CORES PADRÃO PARA O DIAGRAMA):
+- **Eventos de Início:** Verde
+- **Eventos Intermediários:** Amarelo
+- **Eventos de Fim:** Vermelho
+
+---
+
+📝 **Descrição do processo:**
+${description}
+
+---
+
+Responda APENAS com o XML BPMN 2.0 válido e completo, começando com a tag <?xml version="1.0" encoding="UTF-8"?> 
+Garanta que o XML inclua os elementos de diagrama (BPMNDiagram) com as posições dos elementos para visualização.
+NÃO inclua explicações, apenas o XML.`;
   };
 
   // Generate BPMN using OpenAI API
