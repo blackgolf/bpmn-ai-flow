@@ -1,152 +1,107 @@
 
-/**
- * Styles for the BPMN diagram elements
- */
+// Estilos CSS para elementos BPMN
 export const bpmnStyles = `
-  /* Base styles for common event types */
-  .djs-container .bpmn-icon-start-event-none circle {
+  /* Estilos para Eventos de Início */
+  .djs-container .bpmn-icon-start-event circle,
+  .djs-container [data-element-id*="StartEvent"] circle {
     fill: #B7F774 !important;
     stroke: #2ECC40 !important;
+    stroke-width: 2px !important;
   }
-  .djs-container .bpmn-icon-intermediate-event-none circle {
+  
+  /* Estilos para Eventos de Fim */
+  .djs-container .bpmn-icon-end-event circle,
+  .djs-container [data-element-id*="EndEvent"] circle {
+    fill: #FFB3B3 !important;
+    stroke: #FF0000 !important;
+    stroke-width: 2px !important;
+  }
+  
+  /* Estilos para Eventos Intermediários */
+  .djs-container .bpmn-icon-intermediate-event-none circle,
+  .djs-container [data-element-id*="IntermediateThrowEvent"] circle,
+  .djs-container [data-element-id*="IntermediateCatchEvent"] circle {
     fill: #FFE599 !important;
     stroke: #B7B700 !important;
-  }
-  .djs-container .bpmn-icon-end-event-none circle {
-    fill: #FFB3B3 !important;
-    stroke: #FF0000 !important;
-  }
-  .djs-container .bpmn-element-task rect {
-    fill: #FFFFFF !important;
-    stroke: #000000 !important;
-  }
-  .djs-container .bpmn-icon-gateway-xor polygon {
-    fill: #FFFFFF !important;
-    stroke: #000000 !important;
-  }
-  
-  /* More specific selectors for elements by their type or ID pattern */
-  .djs-container .djs-visual[data-element-id*="StartEvent"] circle {
-    fill: #B7F774 !important;
-    stroke: #2ECC40 !important;
-    stroke-width: 2px !important;
-  }
-  .djs-container .djs-visual[data-element-id*="EndEvent"] circle {
-    fill: #FFB3B3 !important;
-    stroke: #FF0000 !important;
-    stroke-width: 2px !important;
-  }
-  .djs-container .djs-visual[data-element-id*="Task"] rect {
-    fill: #FFFFFF !important;
-    stroke: #000000 !important;
-  }
-  .djs-container .djs-visual[data-element-id*="Gateway"] polygon {
-    fill: #FFFFFF !important;
-    stroke: #000000 !important;
-  }
-  
-  /* Additional selectors targeting element types directly */
-  .djs-container [data-element-type="bpmn:StartEvent"] circle {
-    fill: #B7F774 !important;
-    stroke: #2ECC40 !important;
-    stroke-width: 2px !important;
-  }
-  .djs-container [data-element-type="bpmn:EndEvent"] circle {
-    fill: #FFB3B3 !important;
-    stroke: #FF0000 !important;
     stroke-width: 2px !important;
   }
   
-  /* Target all SVG circles inside start events */
-  .djs-container .djs-element.djs-shape[data-shape-type="bpmn:StartEvent"] .djs-visual circle {
-    fill: #B7F774 !important;
-    stroke: #2ECC40 !important;
+  /* Estilos para Atividades */
+  .djs-container .bpmn-icon-task rect,
+  .djs-container [data-element-id*="Task"] rect,
+  .djs-container [data-element-id*="Activity"] rect {
+    fill: #FFFFFF !important;
+    stroke: #000000 !important;
     stroke-width: 2px !important;
   }
   
-  /* Target all SVG circles inside end events */
-  .djs-container .djs-element.djs-shape[data-shape-type="bpmn:EndEvent"] .djs-visual circle {
-    fill: #FFB3B3 !important;
-    stroke: #FF0000 !important;
+  /* Estilos para Gateways */
+  .djs-container .bpmn-icon-gateway-none path,
+  .djs-container [data-element-id*="Gateway"] path {
+    fill: #FFFFFF !important;
+    stroke: #000000 !important;
     stroke-width: 2px !important;
   }
 `;
 
-export const applyCustomColors = (viewer: any) => {
-  if (!viewer) return;
-  
-  const elementRegistry = viewer.get('elementRegistry');
-  const graphicsFactory = viewer.get('graphicsFactory');
-  const canvas = viewer.get('canvas');
-  
-  // Apply custom colors to all elements based on their type
-  elementRegistry.forEach((element: any) => {
-    if (element.type === 'bpmn:StartEvent') {
-      element.businessObject.di.set('fill', '#B7F774');
-      element.businessObject.di.set('stroke', '#2ECC40');
-      graphicsFactory.update('shape', element, element.gfx);
-    } 
-    else if (element.type === 'bpmn:EndEvent') {
-      element.businessObject.di.set('fill', '#FFB3B3');
-      element.businessObject.di.set('stroke', '#FF0000');
-      graphicsFactory.update('shape', element, element.gfx);
-    }
-    else if (element.type === 'bpmn:Task' || element.type === 'bpmn:UserTask' || element.type === 'bpmn:ServiceTask') {
-      element.businessObject.di.set('fill', '#FFFFFF');
-      element.businessObject.di.set('stroke', '#000000');
-      graphicsFactory.update('shape', element, element.gfx);
-    }
-    else if (element.type.includes('Gateway')) {
-      element.businessObject.di.set('fill', '#FFFFFF');
-      element.businessObject.di.set('stroke', '#000000');
-      graphicsFactory.update('shape', element, element.gfx);
-    }
-  });
-  
-  // Force redraw to apply the styles
-  canvas.zoom('fit-viewport');
-};
+// Função para aplicar cores diretamente ao canvas SVG
+export function applyCustomColors(viewer: any) {
+  try {
+    const elementRegistry = viewer.get('elementRegistry');
+    const elements = elementRegistry.getAll();
+    
+    elements.forEach((element: any) => {
+      if (!element || !element.type) return;
+      
+      const gfx = element.gfx;
+      if (!gfx) return;
+      
+      // Colorir eventos de início
+      if (element.type.includes('bpmn:StartEvent')) {
+        const circle = gfx.querySelector('circle');
+        if (circle) {
+          circle.style.fill = '#B7F774';
+          circle.style.stroke = '#2ECC40';
+        }
+      }
+      
+      // Colorir eventos de fim
+      else if (element.type.includes('bpmn:EndEvent')) {
+        const circle = gfx.querySelector('circle');
+        if (circle) {
+          circle.style.fill = '#FFB3B3';
+          circle.style.stroke = '#FF0000';
+        }
+      }
+      
+      // Colorir eventos intermediários
+      else if (element.type.includes('bpmn:IntermediateThrowEvent') || 
+               element.type.includes('bpmn:IntermediateCatchEvent')) {
+        const circle = gfx.querySelector('circle');
+        if (circle) {
+          circle.style.fill = '#FFE599';
+          circle.style.stroke = '#B7B700';
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao aplicar cores personalizadas:', error);
+  }
+}
 
-/**
- * Apply colors when diagram is imported
- */
-export const applyColorsOnImport = (viewer: any) => {
-  if (!viewer) return;
-  
-  // Apply colors when diagram elements are added
-  const eventBus = viewer.get('eventBus');
-  
-  eventBus.on('shape.added', (event: any) => {
-    const element = event.element;
-    
-    if (element.type === 'bpmn:StartEvent') {
-      element.businessObject.di.set('fill', '#B7F774');
-      element.businessObject.di.set('stroke', '#2ECC40');
-    } 
-    else if (element.type === 'bpmn:EndEvent') {
-      element.businessObject.di.set('fill', '#FFB3B3');
-      element.businessObject.di.set('stroke', '#FF0000');
+// Função para configurar a aplicação de cores após o carregamento do diagrama
+export function applyColorsOnImport(viewer: any) {
+  viewer.on('import.done', () => {
+    try {
+      applyCustomColors(viewer);
+      
+      // Também aplicar cores quando o gráfico for alterado (zoom, movimento, etc.)
+      const eventBus = viewer.get('eventBus');
+      eventBus.on('canvas.viewbox.changed', () => {
+        applyCustomColors(viewer);
+      });
+    } catch (error) {
+      console.error('Erro ao aplicar cores após importação:', error);
     }
   });
-  
-  // Also apply colors when elements are rendered
-  eventBus.on('render.shape', (event: any) => {
-    const element = event.element;
-    const gfx = event.gfx;
-    
-    if (element.type === 'bpmn:StartEvent') {
-      const circle = gfx.querySelector('circle');
-      if (circle) {
-        circle.style.fill = '#B7F774';
-        circle.style.stroke = '#2ECC40';
-      }
-    } 
-    else if (element.type === 'bpmn:EndEvent') {
-      const circle = gfx.querySelector('circle');
-      if (circle) {
-        circle.style.fill = '#FFB3B3';
-        circle.style.stroke = '#FF0000';
-      }
-    }
-  });
-};
+}

@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import BpmnViewer from '@/components/BpmnViewer';
 import AiGenerationPanel from '@/components/AiGenerationPanel';
 import XmlViewer from '@/components/XmlViewer';
+import ConfigMenu from '@/components/ConfigMenu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
@@ -21,11 +22,14 @@ const Index = () => {
   return (
     <Layout>
       <div className="flex flex-col h-screen">
-        <div className="p-4 border-b">
-          <h1 className="text-xl font-bold">Diagramas BPMN com IA</h1>
-          <p className="text-sm text-muted-foreground">
-            Crie, visualize e edite diagramas de processo de negócios usando IA
-          </p>
+        <div className="p-4 border-b flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold">Diagramas BPMN com IA</h1>
+            <p className="text-sm text-muted-foreground">
+              Crie, visualize e edite diagramas de processo de negócios usando IA
+            </p>
+          </div>
+          <ConfigMenu />
         </div>
 
         <div className="flex-grow flex overflow-hidden p-4 gap-4">
