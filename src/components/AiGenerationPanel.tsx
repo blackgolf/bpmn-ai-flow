@@ -42,29 +42,38 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
   
   // Este prompt será enviado para a API do OpenAI, incluindo as instruções especiais de BPMN
   const buildBpmnPrompt = (description: string): string => {
-    return `Você é um especialista em modelagem de processos utilizando a notação BPMN 2.0. Com base na descrição do processo fornecida, gere um diagrama BPMN que atenda aos seguintes critérios:
+    return `Você é um especialista em modelagem de processos BPMN 2.0. Gere um diagrama BPMN XML **válido**, com base nas regras da notação oficial BPMN e nas melhores práticas.
 
-**Requisitos Funcionais:**
-- Utilize apenas elementos e atributos definidos no padrão BPMN 2.0, evitando extensões ou atributos específicos de ferramentas, como \`$type\`.
-- Inclua os elementos básicos: eventos (início, intermediário e término), atividades (com verbos no infinitivo), gateways (exclusivo e paralelo), pools e lanes (representando os papéis ou departamentos envolvidos).
-- Mantenha a lógica do processo clara, evitando gateways em sequência sem atividades intermediárias.
-- Certifique-se de que cada gateway de decisão tenha caminhos de fluxo de saída claramente definidos e que todos os caminhos sejam devidamente fechados.
-- Utilize eventos de envio e recebimento para representar comunicações entre participantes, garantindo que cada evento de recebimento corresponda a um evento de envio anterior.
-- As atividades devem ser descritas de forma clara e específica, preferencialmente com marcadores que indiquem o tipo de tarefa (manual, usuário, serviço, etc.).
+Siga rigorosamente as instruções abaixo:
 
-**Requisitos Visuais:**
-- Aplique as seguintes cores padrão aos eventos:
-  - Eventos de Início: Verde
-  - Eventos Intermediários: Amarelo
-  - Eventos de Término: Vermelho
+📌 Estrutura do Diagrama:
+- Utilize **1 pool** e pelo menos **3 lanes (raias)** representando diferentes setores ou papéis.
+- Inclua **1 evento de início** (cor verde), **eventos intermediários** (cor amarela) e **1 evento de término** (cor vermelha).
+- Crie **3 etapas de aprovação** que passem por diferentes raia (exemplo: Operacional, Gerente e Diretor).
+- Use **verbo no infinitivo** para nomear todas as atividades.
+- Respeite o padrão: **atividade -> decisão (gateway) -> fluxo condicional**.
+- Use **gateways exclusivos (X)** e **paralelos (+)** conforme o necessário. Lembre-se: sempre feche o gateway.
+- Evite colocar dois gateways seguidos sem atividades entre eles.
+- Se usar eventos de envio/recebimento, sempre crie os pares corretamente (não abra um link sem ter fechado outro).
+
+🎨 Estilo Visual:
+- Cor dos eventos:
+  - Evento de Início: 🟢 Verde
+  - Evento Intermediário: 🟡 Amarelo
+  - Evento de Término: 🔴 Vermelho
+- Tarefas e gateways devem ser brancos.
+
+🔧 Saída esperada:
+- Um XML **válido** e completo de BPMN 2.0.
+- Comece com a tag <?xml version="1.0" encoding="UTF-8"?> seguida da tag <bpmn:definitions>.
+- **Não inclua comentários ou explicações** fora do XML.
+- Garanta que o XML inclua os elementos de diagrama (BPMNDiagram) com as posições dos elementos para visualização.
+- NÃO inclua atributos não padronizados como $type, customId ou metadata extra.
 
 **Descrição do Processo:**
-${description}
+${description || "Faça um fluxo de processo complexo com 3 aprovações entre áreas distintas, usando swimlanes, respeitando todas as boas práticas BPMN e estrutura lógica de fluxo. O fluxo deve ter início claro, passar por tarefas e aprovações, decisões com gateways, e encerrar com evento de término."}
 
-Gere XML BPMN válido conforme a especificação BPMN 2.0.
-Não inclua atributos não padronizados como $type, customId ou metadata extra.
 Responda APENAS com o XML BPMN 2.0 válido e completo, começando com a tag <?xml version="1.0" encoding="UTF-8"?> 
-Garanta que o XML inclua os elementos de diagrama (BPMNDiagram) com as posições dos elementos para visualização.
 NÃO inclua explicações, apenas o XML.`;
   };
 
