@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import BpmnViewer from '@/components/BpmnViewer';
@@ -6,15 +7,19 @@ import XmlViewer from '@/components/XmlViewer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
+
 const Index = () => {
   const [bpmnXml, setBpmnXml] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('diagram');
+
   const handleGenerateBpmn = (xml: string) => {
     setBpmnXml(xml);
     setActiveTab('diagram');
     toast.success('Diagrama BPMN gerado com sucesso!');
   };
-  return <Layout>
+
+  return (
+    <Layout>
       <div className="flex flex-col h-screen">
         <div className="p-4 border-b">
           <h1 className="text-xl font-bold">Diagramas BPMN com IA</h1>
@@ -39,11 +44,15 @@ const Index = () => {
               </TabsList>
               
               <TabsContent value="diagram" className="flex-grow border rounded-md p-0 mt-2">
-                {bpmnXml ? <div className="h-full">
+                {bpmnXml ? (
+                  <div className="h-full">
                     <BpmnViewer bpmnXml={bpmnXml} />
-                  </div> : <div className="h-full flex items-center justify-center text-muted-foreground">
+                  </div>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-muted-foreground">
                     Descreva um processo e clique em "Gerar BPMN" para iniciar
-                  </div>}
+                  </div>
+                )}
               </TabsContent>
               
               <TabsContent value="xml" className="flex-grow p-0 mt-2">
@@ -53,6 +62,8 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </Layout>;
+    </Layout>
+  );
 };
+
 export default Index;
