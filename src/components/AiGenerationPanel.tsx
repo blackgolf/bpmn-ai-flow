@@ -52,7 +52,7 @@ INSTRUÇÕES PARA O XML BPMN:
 - Use <bpmn:process> com isExecutable="false"
 - Dentro do processo, adicione:
   - <bpmn:laneSet> com lanes (raias), se aplicável
-  - Todos os elementos usados devem ser referenciados com <bpmn:flowNodeRef>
+  - Cada <bpmn:lane> deve conter <bpmn:flowNodeRef> com os IDs dos elementos (tarefas, gateways, eventos) pertencentes àquela lane
   - Eventos de início, atividades com verbos no infinitivo, gateways, eventos de término
   - <bpmn:sequenceFlow> conectando os elementos corretamente
 - Inclua <bpmndi:BPMNDiagram> com shapes e edges para visualização
@@ -80,6 +80,7 @@ Abaixo está a descrição do processo a ser transformado em BPMN:
 
 Responda APENAS com o XML BPMN 2.0 válido e completo, começando com a tag <?xml version="1.0" encoding="UTF-8"?>
 NÃO inclua explicações, apenas o XML.`;
+
 };
 
 
