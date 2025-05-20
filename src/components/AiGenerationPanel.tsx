@@ -42,40 +42,46 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
   
   // Este prompt será enviado para a API do OpenAI, incluindo as instruções especiais de BPMN
   const buildBpmnPrompt = (description: string): string => {
-    return `Você é um especialista em modelagem de processos BPMN 2.0. Gere um diagrama BPMN XML **válido**, com base nas regras da notação oficial BPMN e nas melhores práticas.
+    return `Você é um especialista em BPMN 2.0 e deve gerar um XML completamente válido, seguindo o padrão aceito por modeladores como Camunda Modeler, bpmn-js e Loveable.dev.
 
-Siga rigorosamente as instruções abaixo:
+INSTRUÇÕES PARA O XML BPMN:
+- Use o namespace: http://www.omg.org/spec/BPMN/20100524/MODEL
+- Comece com a tag <?xml version="1.0" encoding="UTF-8"?> seguida de <bpmn:definitions>
+- NÃO inclua nenhum texto fora do XML
+- Inclua <bpmn:collaboration> com <bpmn:participant> referenciando o processo
+- Use <bpmn:process> com isExecutable="false"
+- Dentro do processo, adicione:
+  - <bpmn:laneSet> com lanes (raias), se aplicável
+  - Todos os elementos usados devem ser referenciados com <bpmn:flowNodeRef>
+  - Eventos de início, atividades com verbos no infinitivo, gateways, eventos de término
+  - <bpmn:sequenceFlow> conectando os elementos corretamente
+- Inclua <bpmndi:BPMNDiagram> com shapes e edges para visualização
+- NÃO use atributos inválidos como $type, customId, nem namespaces não padronizados
+- NÃO inclua explicações ou comentários fora do XML
 
-📌 Estrutura do Diagrama:
-- Utilize **1 pool** e pelo menos **3 lanes (raias)** representando diferentes setores ou papéis.
-- Inclua **1 evento de início** (cor verde), **eventos intermediários** (cor amarela) e **1 evento de término** (cor vermelha).
-- Crie **3 etapas de aprovação** que passem por diferentes raia (exemplo: Operacional, Gerente e Diretor).
-- Use **verbo no infinitivo** para nomear todas as atividades.
-- Respeite o padrão: **atividade -> decisão (gateway) -> fluxo condicional**.
-- Use **gateways exclusivos (X)** e **paralelos (+)** conforme o necessário. Lembre-se: sempre feche o gateway.
-- Evite colocar dois gateways seguidos sem atividades entre eles.
-- Se usar eventos de envio/recebimento, sempre crie os pares corretamente (não abra um link sem ter fechado outro).
+Boas práticas para o Diagrama:
+- Use swimlanes quando diferentes setores ou papéis estiverem envolvidos
+- Nomeie as atividades com verbos no infinitivo
+- Utilize gateways para decisões e paralelismo (fechando corretamente)
+- Evite colocar dois gateways em sequência sem atividades intermediárias
+- Para comunicação entre participantes, utilize eventos de envio e recebimento em pares
 
-🎨 Estilo Visual:
-- Cor dos eventos:
-  - Evento de Início: 🟢 Verde
-  - Evento Intermediário: 🟡 Amarelo
-  - Evento de Término: 🔴 Vermelho
-- Tarefas e gateways devem ser brancos.
+Estilo Visual:
+- Evento de Início:  Verde
+- Evento Intermediário:  Amarelo
+- Evento de Término:  Vermelho
+- Tarefas e gateways: Branco
 
-🔧 Saída esperada:
-- Um XML **válido** e completo de BPMN 2.0.
-- Comece com a tag <?xml version="1.0" encoding="UTF-8"?> seguida da tag <bpmn:definitions>.
-- **Não inclua comentários ou explicações** fora do XML.
-- Garanta que o XML inclua os elementos de diagrama (BPMNDiagram) com as posições dos elementos para visualização.
-- NÃO inclua atributos não padronizados como $type, customId ou metadata extra.
+Abaixo está a descrição do processo a ser transformado em BPMN:
 
 **Descrição do Processo:**
-${description || "Faça um fluxo de processo complexo com 3 aprovações entre áreas distintas, usando swimlanes, respeitando todas as boas práticas BPMN e estrutura lógica de fluxo. O fluxo deve ter início claro, passar por tarefas e aprovações, decisões com gateways, e encerrar com evento de término."}
 
-Responda APENAS com o XML BPMN 2.0 válido e completo, começando com a tag <?xml version="1.0" encoding="UTF-8"?> 
+"${description}"
+
+Responda APENAS com o XML BPMN 2.0 válido e completo, começando com a tag <?xml version="1.0" encoding="UTF-8"?>
 NÃO inclua explicações, apenas o XML.`;
-  };
+};
+
 
   // Função para sanitizar o XML retornado pela API
   const sanitizeBpmnXml = (xml: string): string => {
@@ -129,6 +135,19 @@ NÃO inclua explicações, apenas o XML.`;
     try {
       const prompt = buildBpmnPrompt(processDescription);
       
+<<<<<<< HEAD
+      setTimeout(() => {
+        const sampleBpmnXml = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_ISU33_BloqueioDeAcesso" name="ISU33 - Bloqueio de Acesso" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_ChamadoRecebido" name="Chamado recebido via Agidesk">
+      <bpmn:outgoing>Flow1</bpmn:outgoing>
+=======
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -208,35 +227,48 @@ NÃO inclua explicações, apenas o XML.`;
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1" name="Início">
       <bpmn:outgoing>SequenceFlow_1</bpmn:outgoing>
+>>>>>>> d9e5aa1f5fc50752c23540b99aeb8b4b5f019227
     </bpmn:startEvent>
-    <bpmn:task id="Task_1" name="Analisar Solicitação">
-      <bpmn:incoming>SequenceFlow_1</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_2</bpmn:outgoing>
+
+    <bpmn:task id="Task_EnviarEmailNadaConsta" name="Enviar e-mail para o grupo NADA CONSTA">
+      <bpmn:incoming>Flow1</bpmn:incoming>
+      <bpmn:outgoing>Flow2</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="Task_1" />
-    <bpmn:exclusiveGateway id="Gateway_1" name="Aprovado?">
-      <bpmn:incoming>SequenceFlow_2</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_3</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_4</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_2" sourceRef="Task_1" targetRef="Gateway_1" />
-    <bpmn:task id="Task_2" name="Processar Aprovação">
-      <bpmn:incoming>SequenceFlow_3</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_5</bpmn:outgoing>
+
+    <bpmn:task id="Task_ChecarEmail" name="Checar e-mail">
+      <bpmn:incoming>Flow2</bpmn:incoming>
+      <bpmn:outgoing>Flow3</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_3" name="Sim" sourceRef="Gateway_1" targetRef="Task_2" />
-    <bpmn:task id="Task_3" name="Notificar Rejeição">
-      <bpmn:incoming>SequenceFlow_4</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_6</bpmn:outgoing>
+
+    <bpmn:task id="Task_ReceberNadaConsta" name="Recebimento de 'NADA CONSTA'">
+      <bpmn:incoming>Flow3</bpmn:incoming>
+      <bpmn:outgoing>Flow4</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_4" name="Não" sourceRef="Gateway_1" targetRef="Task_3" />
-    <bpmn:endEvent id="EndEvent_1" name="Processo Concluído">
-      <bpmn:incoming>SequenceFlow_5</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_6</bpmn:incoming>
+
+    <bpmn:task id="Task_EnviarEmailInfra" name="Enviar e-mail para Infra">
+      <bpmn:incoming>Flow4</bpmn:incoming>
+      <bpmn:outgoing>Flow5</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_BloquearAcessos" name="Bloquear acessos no AD e E-mail">
+      <bpmn:incoming>Flow5</bpmn:incoming>
+      <bpmn:outgoing>Flow6</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="EndEvent_AcessosBloqueados" name="Acessos bloqueados">
+      <bpmn:incoming>Flow6</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_5" sourceRef="Task_2" targetRef="EndEvent_1" />
-    <bpmn:sequenceFlow id="SequenceFlow_6" sourceRef="Task_3" targetRef="EndEvent_1" />
+
+    <!-- Flows -->
+    <bpmn:sequenceFlow id="Flow1" sourceRef="StartEvent_ChamadoRecebido" targetRef="Task_EnviarEmailNadaConsta"/>
+    <bpmn:sequenceFlow id="Flow2" sourceRef="Task_EnviarEmailNadaConsta" targetRef="Task_ChecarEmail"/>
+    <bpmn:sequenceFlow id="Flow3" sourceRef="Task_ChecarEmail" targetRef="Task_ReceberNadaConsta"/>
+    <bpmn:sequenceFlow id="Flow4" sourceRef="Task_ReceberNadaConsta" targetRef="Task_EnviarEmailInfra"/>
+    <bpmn:sequenceFlow id="Flow5" sourceRef="Task_EnviarEmailInfra" targetRef="Task_BloquearAcessos"/>
+    <bpmn:sequenceFlow id="Flow6" sourceRef="Task_BloquearAcessos" targetRef="EndEvent_AcessosBloqueados"/>
   </bpmn:process>
+<<<<<<< HEAD
+=======
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0n8rfe2">
       <bpmndi:BPMNShape id="Participant_1_di" bpmnElement="Participant_1" isHorizontal="true">
@@ -317,6 +349,7 @@ NÃO inclua explicações, apenas o XML.`;
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
+>>>>>>> d9e5aa1f5fc50752c23540b99aeb8b4b5f019227
 </bpmn:definitions>`;
 
     onGenerateBpmn(sampleBpmnXml);
