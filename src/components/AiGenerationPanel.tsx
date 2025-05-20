@@ -42,35 +42,64 @@ const AiGenerationPanel: React.FC<AiGenerationPanelProps> = ({ onGenerateBpmn })
   
   // Este prompt será enviado para a API do OpenAI, incluindo as instruções especiais de BPMN
   const buildBpmnPrompt = (description: string): string => {
-    return `Você é um especialista em modelagem de processos utilizando a notação BPMN 2.0. Com base na descrição abaixo, gere um diagrama BPMN que respeite os seguintes critérios funcionais e visuais:
+    return `Você é um especialista em modelagem de processos utilizando a notação BPMN 2.0. Com base na descrição do processo fornecida, gere um diagrama BPMN que atenda aos seguintes critérios:
 
-📌 FUNCIONAIS:
-- Utilize os elementos básicos de BPMN: 
-  - Eventos (Início, Intermediário e Término),
-  - Atividades (com verbo no infinitivo),
-  - Gateways (Exclusivo e Paralelo),
-  - Pools e Lanes (representando os papéis/setores envolvidos no processo).
-- Mantenha a lógica do processo clara e compreensível, evitando gateways em sequência sem atividades entre eles.
-- Sempre que abrir um gateway, lembre-se de fechá-lo corretamente com o fluxo de retorno.
-- Se houver troca de mensagens entre participantes, utilize eventos de envio e recebimento de forma lógica (não iniciar com recebimento sem envio).
-- As atividades devem ser claras e específicas, preferencialmente com marcadores que indiquem o tipo de tarefa: Manual, Usuário, Serviço, etc.
-- O processo deve deixar evidente: ponto de partida, entradas, sequência das atividades, quem executa (raias), recursos, saídas e término.
+**Requisitos Funcionais:**
+- Utilize apenas elementos e atributos definidos no padrão BPMN 2.0, evitando extensões ou atributos específicos de ferramentas, como \`$type\`.
+- Inclua os elementos básicos: eventos (início, intermediário e término), atividades (com verbos no infinitivo), gateways (exclusivo e paralelo), pools e lanes (representando os papéis ou departamentos envolvidos).
+- Mantenha a lógica do processo clara, evitando gateways em sequência sem atividades intermediárias.
+- Certifique-se de que cada gateway de decisão tenha caminhos de fluxo de saída claramente definidos e que todos os caminhos sejam devidamente fechados.
+- Utilize eventos de envio e recebimento para representar comunicações entre participantes, garantindo que cada evento de recebimento corresponda a um evento de envio anterior.
+- As atividades devem ser descritas de forma clara e específica, preferencialmente com marcadores que indiquem o tipo de tarefa (manual, usuário, serviço, etc.).
 
-🎨 VISUAIS (CORES PADRÃO PARA O DIAGRAMA):
-- **Eventos de Início:** Verde
-- **Eventos Intermediários:** Amarelo
-- **Eventos de Fim:** Vermelho
+**Requisitos Visuais:**
+- Aplique as seguintes cores padrão aos eventos:
+  - Eventos de Início: Verde
+  - Eventos Intermediários: Amarelo
+  - Eventos de Término: Vermelho
 
----
-
-📝 **Descrição do processo:**
+**Descrição do Processo:**
 ${description}
 
----
-
+Gere XML BPMN válido conforme a especificação BPMN 2.0.
+Não inclua atributos não padronizados como $type, customId ou metadata extra.
 Responda APENAS com o XML BPMN 2.0 válido e completo, começando com a tag <?xml version="1.0" encoding="UTF-8"?> 
 Garanta que o XML inclua os elementos de diagrama (BPMNDiagram) com as posições dos elementos para visualização.
 NÃO inclua explicações, apenas o XML.`;
+  };
+
+  // Função para sanitizar o XML retornado pela API
+  const sanitizeBpmnXml = (xml: string): string => {
+    // Remover qualquer texto antes da tag XML
+    const xmlStart = xml.indexOf('<?xml');
+    if (xmlStart !== -1) {
+      return xml.slice(xmlStart);
+    }
+    
+    // Se não encontrar a tag <?xml, procurar pela tag <definitions>
+    const definitionsStart = xml.indexOf('<bpmn:definitions') >= 0 ? 
+                             xml.indexOf('<bpmn:definitions') : 
+                             xml.indexOf('<definitions');
+    
+    if (definitionsStart !== -1) {
+      // Adicionar a tag XML se ela não estiver presente
+      return '<?xml version="1.0" encoding="UTF-8"?>\n' + xml.slice(definitionsStart);
+    }
+    
+    return xml; // Retorna o XML original se não conseguir sanitizar
+  };
+
+  // Função para verificar se o XML parece ser válido
+  const validateBpmnXml = (xml: string): boolean => {
+    // Verificar tags básicas que um XML BPMN deve ter
+    const hasXmlDeclaration = xml.includes('<?xml');
+    const hasDefinitionsTag = xml.includes('<bpmn:definitions') || xml.includes('<definitions');
+    const hasBpmnDiagram = xml.includes('<bpmndi:BPMNDiagram') || xml.includes('<BPMNDiagram');
+    
+    // Verificar se há erros óbvios
+    const hasParserError = xml.includes('parsererror');
+    
+    return hasXmlDeclaration && hasDefinitionsTag && hasBpmnDiagram && !hasParserError;
   };
 
   // Generate BPMN using OpenAI API
@@ -120,21 +149,25 @@ NÃO inclua explicações, apenas o XML.`;
       }
 
       const data = await response.json();
-      const generatedXml = data.choices[0].message.content.trim();
+      let generatedXml = data.choices[0].message.content.trim();
       
-      // Verifica se o conteúdo começa com a tag XML
-      if (!generatedXml.startsWith('<?xml')) {
-        // Tenta extrair o XML se estiver envolto em backticks ou outros formatos
-        const xmlMatch = generatedXml.match(/<\?xml.*?<\/bpmn:definitions>/s);
+      // Sanitizar o XML recebido
+      generatedXml = sanitizeBpmnXml(generatedXml);
+      
+      // Validar se o XML parece válido
+      if (!validateBpmnXml(generatedXml)) {
+        // Tenta extrair XML de backticks ou outros formatos
+        const xmlMatch = generatedXml.match(/<\?xml.*?<\/bpmn:definitions>/s) || 
+                        generatedXml.match(/<\?xml.*?<\/definitions>/s);
+                        
         if (xmlMatch) {
-          onGenerateBpmn(xmlMatch[0]);
+          generatedXml = xmlMatch[0];
         } else {
           throw new Error('O formato XML gerado não é válido');
         }
-      } else {
-        onGenerateBpmn(generatedXml);
       }
       
+      onGenerateBpmn(generatedXml);
       toast.success('Diagrama BPMN gerado com sucesso!');
     } catch (error: any) {
       console.error('Erro ao gerar diagrama BPMN:', error);
